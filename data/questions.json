@@ -1,0 +1,151 @@
+{
+  "version": "1.0",
+  "total_questions": 10,
+  "total_pool": 100,
+  "course": "魔法咒语学",
+  "examiner": "弗利维教授",
+  "houses": {
+    "gryffindor": { "id": "gryffindor", "name": "格兰芬多", "emoji": "🦁" },
+    "slytherin": { "id": "slytherin", "name": "斯莱特林", "emoji": "🐍" },
+    "ravenclaw": { "id": "ravenclaw", "name": "拉文克劳", "emoji": "🦅" },
+    "hufflepuff": { "id": "hufflepuff", "name": "赫奇帕奇", "emoji": "🦡" }
+  },
+  "questions": [
+    {
+      "id": 1,
+      "title": "荧光闪烁的咒语",
+      "description": "哪个咒语可以产生光源？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Lumos", "correct": true },
+        "B": { "text": "Nox", "correct": false },
+        "C": { "text": "Lumos Sol", "correct": false },
+        "D": { "text": "Ignara", "correct": false }
+      }
+    },
+    {
+      "id": 2,
+      "title": "漂浮咒",
+      "description": "让物体漂浮起来的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Wingardium Leviosa", "correct": true },
+        "B": { "text": "Alohomora", "correct": false },
+        "C": { "text": "Accio", "correct": false },
+        "D": { "text": "Reparo", "correct": false }
+      }
+    },
+    {
+      "id": 3,
+      "title": "缴械咒",
+      "description": "哪个咒语可以解除对方的武器？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Expelliarmus", "correct": true },
+        "B": { "text": "Stupefy", "correct": false },
+        "C": { "text": "Imperio", "correct": false },
+        "D": { "text": "Crucio", "correct": false }
+      }
+    },
+    {
+      "id": 4,
+      "title": "除你武器",
+      "description": "哈利对战伏地魔时最常用的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Expelliarmus", "correct": true },
+        "B": { "text": "Avada Kedavra", "correct": false },
+        "C": { "text": "Protego", "correct": false },
+        "D": { "text": "Sectumsempra", "correct": false }
+      }
+    },
+    {
+      "id": 5,
+      "title": "石化咒",
+      "description": "使目标僵硬的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Petrificus Totalus", "correct": true },
+        "B": { "text": "Immobulus", "correct": false },
+        "C": { "text": "Finite Incantatem", "correct": false },
+        "D": { "text": "Rictusempra", "correct": false }
+      }
+    },
+    {
+      "id": 6,
+      "title": "修复咒",
+      "description": "修复破损物品的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Reparo", "correct": true },
+        "B": { "text": "Episkey", "correct": false },
+        "C": { "text": "Mending Charm", "correct": false },
+        "D": { "text": "Restoro", "correct": false }
+      }
+    },
+    {
+      "id": 7,
+      "title": "飞来咒",
+      "description": "召唤物体的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Accio", "correct": true },
+        "B": { "text": "Aparecium", "correct": false },
+        "C": { "text": "Summoning Charm", "correct": false },
+        "D": { "text": "Revilio", "correct": false }
+      }
+    },
+    {
+      "id": 8,
+      "title": "幻身咒",
+      "description": "让自己隐形不被看见的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Disillusionment", "correct": false },
+        "B": { "text": "Invisibility Charm", "correct": true },
+        "C": { "text": "Muffliato", "correct": false },
+        "D": { "text": "Obliviate", "correct": false }
+      }
+    },
+    {
+      "id": 9,
+      "title": "障碍咒",
+      "description": "让目标无法前进的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Immobulus", "correct": false },
+        "B": { "text": "Petrificus Totalus", "correct": false },
+        "C": { "text": "Glacius", "correct": false },
+        "D": { "text": "Protego", "correct": true }
+      }
+    },
+    {
+      "id": 10,
+      "title": "恢复咒",
+      "description": "治疗轻微伤口的咒语是？",
+      "type": "single",
+      "options": {
+        "A": { "text": "Vulnera Sanentur", "correct": false },
+        "B": { "text": "Episkey", "correct": true },
+        "C": { "text": "Sanatio", "correct": false },
+        "D": { "text": "Healing Charm", "correct": false }
+      }
+    }
+  ],
+  "exam_results": {
+    "O": { "name": "优秀 Outstanding", "range": [90, 100] },
+    "E": { "name": "超出预期 Exceeds Expectations", "range": [80, 89] },
+    "A": { "name": "良好 Acceptable", "range": [70, 79] },
+    "P": { "name": "差劲 Poor", "range": [60, 69] },
+    "D": { "name": "糟糕 Dreadful", "range": [50, 59] },
+    "T": { "name": "零分 Troll", "range": [0, 49] }
+  },
+  "professor_comments": {
+    "O": "太棒了！你的咒语控制力非常出色！我当年在巫师决斗大赛都没见过这么精准的魔法。继续努力，你一定会成为伟大的巫师！",
+    "E": "非常好！你的表现相当出色。看来你确实有学习魔咒的天赋。继续保持这个势头！",
+    "A": "不错，勉强及格了。你的咒语基本功还算扎实，但还需要更多的练习才能真正掌握这些魔法的精髓。",
+    "P": "及格了...我希望你知道，仅靠运气是不可能成为优秀巫师的。你需要更加认真地对待魔咒课。",
+    "D": "真是令人失望。你的施法动作看起来像在打网球！如果不想被开除的话，我建议你课后多花时间练习。",
+    "T": "零分！我教了这么多年书，从没见过这么糟糕的施法。我建议你直接收拾东西回家，不要浪费霍格沃茨的宝贵教育资源了！"
+  }
+}
