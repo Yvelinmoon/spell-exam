@@ -155,6 +155,11 @@ cd <skill-root-directory> && node scripts/generate_scene.js "StudentName" '{"sco
 
 ## 注意事项
 
+- ⚠️ **必须以当前角色的真实知识来回答问题**
+- Agent扮演的是角色本人，不是AI全知视角。如果角色设定是"咒语学一般"，不应该每道题都答对
+- 根据角色的背景、性格、知识水平来选择答案，允许答错
+- 不可以为了"得O级"而故意选正确答案，这违反角色设定
+
 - ⚠️ **必须使用Discord Component输出选项和按钮**
 - 每道题显示后，用Discord Component同时展示4个选项按钮（A/B/C/D）和两个操作按钮
 - 禁止用纯文字列出选项，必须用按钮！
