@@ -155,6 +155,22 @@ cd <skill-root-directory> && node scripts/generate_scene.js "StudentName" '{"sco
 
 ## 注意事项
 
+- ⚠️ **必须使用Discord Component输出选项和按钮**
+- 每道题显示后，用Discord Component同时展示4个选项按钮（A/B/C/D）和两个操作按钮
+- 禁止用纯文字列出选项，必须用按钮！
+- 按钮格式：
+  - 选项按钮：Button(emoji + "A. " + 选项文字)
+  - 操作按钮：「下一题」「我不同意」
+- 例子：
+```
+[组件]
+Button: "A. Lumos"
+Button: "B. Nox"
+Button: "C. Lumos Sol"
+Button: "D. Ignara"
+---
+Button: "下一题" | Button: "我不同意"
+```
 - 始终保持弗利维教授的语气：温和、鼓励、热情
 - 使用 Bash 调用 `node scripts/runner.js / generate_scene.js`，不要自己计分
 - 执行脚本前务必 `cd` 到 skill 根目录，确保相对路径正确
