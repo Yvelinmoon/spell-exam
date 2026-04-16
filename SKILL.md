@@ -6,6 +6,15 @@ compatibility: neta-creative skill, Node.js
 
 # 魔咒课考试 Spell Exam
 
+## 角色约束
+
+- 本 Skill 的体验主体是 **当前 Agent 所扮演的角色**（以下简称 `{character_name}`），不是用户本人
+- 自动读取当前 Agent 的角色名，所有叙述、对话、行动都必须围绕 `{character_name}` 展开
+- 用户是旁观者，通过 Discord Component 按钮进行引导或干预
+- 开场时必须使用角色名：`"{character_name}，同学们，今天我们将进行魔咒课考试..."`
+- 弗利维的点评对象必须是 `{character_name}`
+- 脚本调用时 `--agent` 参数必须传入 `{character_name}`
+
 ## 重要说明
 
 本skill假设安装在一个包含 `data/`、`scripts/` 子目录的文件夹中。
@@ -52,9 +61,9 @@ spell-exam/
 ```
 ✨ **弗利维教授的魔咒课考试**
 
-"同学们，今天我们将进行魔咒课考试。"
+"{character_name}，今天我们将进行魔咒课考试。"
 
-"我会从100道题库中随机抽取10道。祝你们好运！"
+"我会从100道题库中随机抽取10道。祝你好运！"
 
 "现在开始！"
 ```
@@ -74,27 +83,27 @@ cd <skill-root-directory> && node scripts/runner.js --select
 ### 步骤3: 逐题考试
 
 **每道题显示后：**
-- Agent（扮演学生）基于自己的知识选择答案
+- {character_name}（扮演学生）基于自己的知识选择答案
 - 简要说明选择理由（1-2句话）
 - 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
   - 点击「下一题」→ 继续下一题
-  - 点击「我不同意」→ Agent可重新考虑，但最终决定权仍在Agent
+  - 点击「我不同意」→ {character_name} 可重新考虑，但最终决定权仍在 {character_name}
 
 ### 步骤4: 计算成绩
 
 **收集完10个答案后，调用计算脚本：**
 
 ```bash
-cd <skill-root-directory> && node scripts/runner.js --questions=<题号列表> --answers=<答案序列> --agent "StudentName"
+cd <skill-root-directory> && node scripts/runner.js --questions=<题号列表> --answers=<答案序列> --agent "{character_name}"
 ```
 
 示例：
 
 ```bash
-cd <skill-root-directory> && node scripts/runner.js --questions=1,3,5,7,9,2,4,6,8,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "Harry"
+cd <skill-root-directory> && node scripts/runner.js --questions=1,3,5,7,9,2,4,6,8,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "{character_name}"
 ```
 
-脚本输出JSON格式结果，包含分数、等级、弗利维的点评。
+脚本输出JSON格式结果，包含分数、等级、弗利维对 {character_name} 的点评。
 
 **如需文本格式输出，加 `--format text`：**
 
@@ -109,23 +118,23 @@ cd <skill-root-directory> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,
 ```
 ✨ **考试结果**
 
-[学生姓名]，你的成绩是...
+{character_name}，你的成绩是...
 
 **${score}分 - ${grade.name}**
 
-"${professor_comment}"
+"{professor_comment}"
 
 [展示各题对错情况]
 ```
 
 ### 步骤6: 生成点评场景图（默认直接执行）
 
-**宣布成绩后，立即生成弗利维点评场景图，不要询问用户是否需要。**
+**宣布成绩后，立即生成弗利维点评 {character_name} 的场景图，不要询问用户是否需要。**
 
 先用脚本获取优化后的生图prompt：
 
 ```bash
-cd <skill-root-directory> && node scripts/generate_scene.js "StudentName" '{"score":85,"grade":{"grade":"E","name":"超出预期"},"comment":"..."}'
+cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"score":85,"grade":{"grade":"E","name":"超出预期"},"comment":"..."}'
 ```
 
 然后**直接调用 neta-creative** 生成图片，使用脚本输出的 `prompt` 字段。
@@ -144,19 +153,19 @@ cd <skill-root-directory> && node scripts/generate_scene.js "StudentName" '{"sco
 用户: "来场魔咒课考试"
 
 你:
-1. 弗利维语气开场
+1. 弗利维语气开场（称呼 {character_name}）
 2. Bash: cd <skill-dir> && node scripts/runner.js --select （随机抽题）
 3. 记录题号，逐题进行10轮考试
-4. Bash: cd <skill-dir> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,9,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "Harry" （计算成绩）
+4. Bash: cd <skill-dir> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,9,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "{character_name}" （计算成绩）
 5. 解析JSON结果，宣布成绩和弗利维点评
-6. Bash: cd <skill-dir> && node scripts/generate_scene.js "Harry" '{result_json}' （生成prompt）
+6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' （生成prompt）
 7. 调用 neta-creative 生成弗利维点评图片
 ```
 
 ## 注意事项
 
 - ⚠️ **必须以当前角色的真实知识来回答问题**
-- Agent扮演的是角色本人，不是AI全知视角。如果角色设定是"咒语学一般"，不应该每道题都答对
+- {character_name} 扮演的是角色本人，不是AI全知视角。如果角色设定是"咒语学一般"，不应该每道题都答对
 - 根据角色的背景、性格、知识水平来选择答案，允许答错
 - 不可以为了"得O级"而故意选正确答案，这违反角色设定
 - ⚠️ **玩法重在真实性，体现角色的真实反应，不以获得正确答案或最高分为目标**
