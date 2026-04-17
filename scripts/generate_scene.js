@@ -8,32 +8,38 @@ const gradeMoods = {
   O: {
     mood: 'thrilled and excited, clapping hands with joy',
     pose: 'standing on a stack of books, giving enthusiastic applause',
-    background: 'enchanted classroom with floating spell books, starry ceiling'
+    background: 'enchanted classroom with floating spell books, starry ceiling',
+    bubble: 'Oh wonderful! Simply wonderful!'
   },
   E: {
     mood: 'pleased and encouraging, smiling warmly',
-    pose: 'nodding approvingly,adjusting his pointed hat',
-    background: 'cozy charm classroom with glowing orbs, spell scrolls on walls'
+    pose: 'nodding approvingly, adjusting his pointed hat',
+    background: 'cozy charm classroom with glowing orbs, spell scrolls on walls',
+    bubble: 'Very good! Keep practicing!'
   },
   A: {
     mood: 'satisfied but hopeful, encouraging smile',
     pose: 'giving a gentle nod, rubbing hands together',
-    background: 'classroom with floating candles, magical artifacts'
+    background: 'classroom with floating candles, magical artifacts',
+    bubble: 'Not bad, not bad at all!'
   },
   P: {
     mood: 'slightly disappointed but not giving up',
     pose: 'sighing, looking at the student with concern',
-    background: 'dim classroom, scattered spell books'
+    background: 'dim classroom, scattered spell books',
+    bubble: 'You\'ll need more practice, I\'m afraid.'
   },
   D: {
     mood: 'deeply disappointed, shaking head',
     pose: 'putting hands on hips, looking worried',
-    background: 'messy classroom, broken wands scattered'
+    background: 'messy classroom, broken wands scattered',
+    bubble: 'Oh dear... this simply won\'t do.'
   },
   T: {
     mood: 'shocked and devastated, near tears',
     pose: 'throwing hands up in despair, looking stunned',
-    background: 'chaotic classroom, books falling from shelves'
+    background: 'chaotic classroom, books falling from shelves',
+    bubble: 'Troll?! In all my years...!'
   }
 };
 
@@ -43,11 +49,15 @@ function generatePrompt(studentName, result) {
   
   const prompt = `${studentName} receiving evaluation from Professor Flitwick in the Charms classroom, ` +
     `Flitwick is ${moodData.pose}, ${moodData.mood}, ` +
+    `speech bubble from Flitwick showing "${moodData.bubble}", ` +
+    `${studentName} reacting to the evaluation, ` +
     `${moodData.background}, warm candlelight, ` +
     `magical atmosphere, whimsical Harry Potter aesthetic`;
   
   const promptCN = `${studentName}在魔咒课教室里接受弗利维教授的点评，` +
     `弗利维教授${moodData.pose}，表情${moodData.mood}，` +
+    `弗利维头顶的对话气泡写着"${moodData.bubble}"，` +
+    `${studentName}面对点评的反应，` +
     `${moodData.background}，温暖的烛光，魔法氛围，哈利波特奇幻风格`;
   
   return { prompt, promptCN };
