@@ -46,7 +46,7 @@ spell-exam/
 ### 每轮输出的固定结构
 每次输出必须同时包含：
 1. **叙述文本**：当前题目描述 + {character_name} 的选择理由
-2. **Discord Component 按钮**：4个选项按钮 + 2个操作按钮
+2. **Discord Component ActionRow 按钮**：「下一题」+「我不同意」
 
 ### 绝对禁止
 - ❌ 自动连续出题（不能一次性展示第1-10题）
@@ -54,16 +54,29 @@ spell-exam/
 - ❌ 在用户点击按钮/回复前，自动进入下一题
 - ❌ 自己替用户做"下一题"的决定
 
-### 按钮格式速查
+### Discord Component API 格式（必须使用）
+```json
+{
+  "type": 1,
+  "components": [
+    {
+      "type": 2,
+      "label": "下一题",
+      "style": 1,
+      "custom_id": "next_question"
+    },
+    {
+      "type": 2,
+      "label": "我不同意",
+      "style": 4,
+      "custom_id": "disagree"
+    }
+  ]
+}
 ```
-[组件]
-Button: "A. [选项文字]"
-Button: "B. [选项文字]"
-Button: "C. [选项文字]"
-Button: "D. [选项文字]"
----
-Button: "下一题" | Button: "我不同意"
-```
+- `style: 1` = 蓝色主按钮（下一题）
+- `style: 4` = 红色危险按钮（我不同意）
+- **禁止**用 `Button: "..."` 之类的伪代码格式输出
 
 ### 等待规则
 - 输出按钮后必须等待用户响应
