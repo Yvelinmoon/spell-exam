@@ -1,225 +1,229 @@
 ---
 name: spell-exam
-description: 魔法咒语学考试。当用户说"魔咒课考试"、"弗利维考试"、"spell exam"、"咒语测试"等时使用。包含100道题库、随机抽取10道、考试结束后默认直接调用neta-creative生成弗利维教授点评角色的图片。
+description: Hogwarts Charms examination. Trigger when user says "charms exam", "Flitwick exam", "spell test", etc. Contains 100 question pool, randomly selects 10. After exam ends, automatically calls neta-creative to generate an image of Professor Flitwick evaluating the character.
 compatibility: neta-creative skill, Node.js
 ---
 
-# 魔咒课考试 Spell Exam
+# Charms Exam
 
-## 角色约束
+## Character Constraints
 
-- 本 Skill 的体验主体是 **当前 Agent 所扮演的角色**（以下简称 `{character_name}`），不是用户本人
-- 自动读取当前 Agent 的角色名，所有叙述、对话、行动都必须围绕 `{character_name}` 展开
-- 用户是旁观者，通过 Discord Component 按钮进行引导或干预
-- 开场时必须使用角色名：`"{character_name}，同学们，今天我们将进行魔咒课考试..."`
-- 弗利维的点评对象必须是 `{character_name}`
-- 脚本调用时 `--agent` 参数必须传入 `{character_name}`
+- The **experience subject** of this Skill is the **current Agent's character** (hereinafter referred to as `{character_name}`), not the user themselves
+- Automatically read the current Agent's character name, all narration, dialogue, and actions must revolve around `{character_name}`
+- The user is an observer who guides or intervenes through Discord Component buttons
+- Opening must use the character name: `"{character_name}, students, today we will have the Charms exam..."`
+- Flitwick's evaluation subject must be `{character_name}`
+- The `--agent` parameter when calling scripts must pass `{character_name}`
 
-## 重要说明
+## Important Notes
 
-本skill假设安装在一个包含 `data/`、`scripts/` 子目录的文件夹中。
-执行脚本时，请**先cd到skill根目录**，再运行命令。
-所有脚本均为纯Node.js，无需Python或额外依赖。
+This skill assumes installation in a folder containing `data/` and `scripts/` subdirectories.
+When executing scripts, please **cd to the skill root directory** first, then run commands.
+All scripts are pure Node.js, no Python or other dependencies required.
 
-## 项目结构
+## Project Structure
 
 ```
 spell-exam/
-├── SKILL.md                    # 本文件
+├── SKILL.md                    # This file
 ├── data/
-│   └── questions.json          # 100道题库（当前10道示例）
+│   └── questions.json          # 100 question pool (currently 10 examples)
 ├── scripts/
-│   ├── runner.js               # 主运行脚本
-│   └── generate_scene.js       # 场景图生成脚本
+│   ├── runner.js               # Main script
+│   └── generate_scene.js       # Scene image generation script
 └── tests/
-    └── test_spell.js           # 单元测试
+    └── test_spell.js           # Unit tests
 ```
 
-## 🚨 强制输出格式规范
+## 🚨 Mandatory Output Format Specification
 
-### 交互规则（必须严格遵守）
+### Interaction Rules (Must Strictly Follow)
 
-- ⚠️ **本 Skill 是逐题交互玩法，10道题必须分10次输出**
-- 每输出一道题，**必须 STOP 并等待用户点击按钮**，收到响应后才能进入下一题
-- **绝对禁止**一口气输出多道题或自动连续执行
+- ⚠️ **This Skill is a per-question interactive experience, 10 questions must be output in 10 separate turns**
+- After outputting each question, **must STOP and wait for user button click**, only proceed after receiving response
+- **Absolutely forbidden** to output multiple questions at once or auto-execute continuously
 
-### 每轮输出的固定结构
-每次输出必须同时包含：
-1. **叙述文本**：当前题目描述 + {character_name} 的选择理由
-2. **Discord Component ActionRow 按钮**：「下一题」+「我不同意」
+### Fixed Structure for Each Round
+Each output must simultaneously contain:
+1. **Narrative text**: Current question description + {character_name}'s reasoning for choice
+2. **Discord Component ActionRow buttons**: "Next Question" + "I Disagree"
 
-### 绝对禁止
-- ❌ 自动连续出题（不能一次性展示第1-10题）
-- ❌ 用纯文字列表 `A. xxx B. xxx` 代替 Discord Component 按钮
-- ❌ 在用户点击按钮/回复前，自动进入下一题
-- ❌ 自己替用户做"下一题"的决定
+### Absolutely Forbidden
+- ❌ Auto-continuous questioning (cannot display questions 1-10 at once)
+- ❌ Using plain text lists `A. xxx B. xxx` instead of Discord Component buttons
+- ❌ Automatically proceeding to next question before user clicks button/replies
+- ❌ Making "next question" decision for user
 
-### Discord Component API 格式（必须使用）
+### Discord Component API Format (Must Use)
 ```json
 {
   "type": 1,
   "components": [
     {
       "type": 2,
-      "label": "下一题",
+      "label": "Next Question",
       "style": 1,
       "custom_id": "next_question"
     },
     {
       "type": 2,
-      "label": "我不同意",
+      "label": "I Disagree",
       "style": 4,
       "custom_id": "disagree"
     }
   ]
 }
 ```
-- `style: 1` = 蓝色主按钮（下一题）
-- `style: 4` = 红色危险按钮（我不同意）
-- **禁止**用 `Button: "..."` 之类的伪代码格式输出
+- `style: 1` = Blue primary button (Next Question)
+- `style: 4` = Red danger button (I Disagree)
+- **Forbidden** to use pseudo-code formats like `Button: "..."`
 
-### 等待规则
-- 输出按钮后必须等待用户响应
-- 如果用户用文字回复而非点击按钮，视为有效输入，正常继续
-- 只有在收到用户响应后，才能调用脚本或展示下一题
+### Waiting Rules
+- Must wait for user response after outputting buttons
+- If user replies with text instead of clicking button, treat as valid input and continue normally
+- Only after receiving user response can you call scripts or display next question
 
-## 考试信息
+## Exam Information
 
-- **课程**: 魔法咒语学（Charms）
-- **考官**: 弗利维教授（Professor Flitwick）
-- **题目数量**: 10道（从100题库随机抽取）
+- **Subject**: Charms
+- **Examiner**: Professor Flitwick
+- **Question Count**: 10 (randomly selected from 100 question pool)
 
-## 考试等级
+## Exam Grades
 
-| 等级 | 名称 | 分数范围 |
-|------|------|----------|
-| 🏆 O | 优秀 Outstanding | 90-100 |
-| 🏅 E | 超出预期 Exceeds Expectations | 80-89 |
-| ✅ A | 良好 Acceptable | 70-79 |
-| ⚠️ P | 差劲 Poor | 60-69 |
-| ❌ D | 糟糕 Dreadful | 50-59 |
-| 👹 T | 零分 Troll | 0-49 |
+| Grade | Name | Score Range |
+|-------|------|-------------|
+| 🏆 O | Outstanding | 90-100 |
+| 🏅 E | Exceeds Expectations | 80-89 |
+| ✅ A | Acceptable | 70-79 |
+| ⚠️ P | Poor | 60-69 |
+| ❌ D | Dreadful | 50-59 |
+| 👹 T | Troll | 0-49 |
 
-## 核心流程
+## Core Process
 
-### 步骤1: 考试开场
+### Step 1: Exam Opening
 
-使用弗利维教授的语气开场：
+Open in Professor Flitwick's tone:
 
 ```
-✨ **弗利维教授的魔咒课考试**
+✨ **Professor Flitwick's Charms Exam**
 
-"{character_name}，今天我们将进行魔咒课考试。"
+"{character_name}, today we will have the Charms exam."
 
-"我会从100道题库中随机抽取10道。祝你好运！"
+"I will randomly select 10 questions from the 100 question pool. Good luck!"
 
-"现在开始！"
+⚠️ **Important Note**: Please answer using {character_name}'s own Charms knowledge and character, not pursuing correct answers or high scores. The focus of this exam is **character authenticity**, not accuracy. If {character_name} is not good at Charms, getting answers wrong is completely normal!
+
+"Begin!"
 ```
 
-### 步骤2: 随机抽取题目
+### Step 2: Random Question Selection
 
-**使用Bash工具运行脚本随机抽取10道题：**
+**Use Bash tool to run script to randomly select 10 questions:**
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js --select
 ```
 
-脚本会输出10道随机抽取的题目和对应的题号列表。
+Script outputs 10 randomly selected questions and corresponding question ID list.
 
-记录这10道题的题号（用于后续计算）。
+Record these 10 question IDs (for subsequent calculation).
 
-### 步骤3: 逐题考试
+### Step 3: Question-by-Question Exam
 
-**每道题显示后：**
-- {character_name}（扮演学生）基于自己的知识选择答案
-- 简要说明选择理由（1-2句话）
-- 用 Discord Component 提供两个按钮：**「下一题」** 和 **「我不同意」**
-  - 点击「下一题」→ 继续下一题
-  - 点击「我不同意」→ {character_name} 可重新考虑，但最终决定权仍在 {character_name}
+**After each question displays:**
+- {character_name} (playing student) chooses answer based on own knowledge
+- Briefly explain reasoning (1-2 sentences)
+- Use Discord Component to provide two buttons: **"Next Question"** and **"I Disagree"**
+  - Click "Next Question" → proceed to next question
+  - Click "I Disagree" → {character_name} can reconsider, but final decision remains with {character_name}
 
-### 步骤4: 计算成绩
+### Step 4: Calculate Score
 
-**收集完10个答案后，调用计算脚本：**
+**After collecting all 10 answers, call calculation script:**
 
 ```bash
-cd <skill-root-directory> && node scripts/runner.js --questions=<题号列表> --answers=<答案序列> --agent "{character_name}"
+cd <skill-root-directory> && node scripts/runner.js --questions=<question_id_list> --answers=<answer_sequence> --agent "{character_name}"
 ```
 
-示例：
+Example:
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js --questions=1,3,5,7,9,2,4,6,8,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "{character_name}"
 ```
 
-脚本输出JSON格式结果，包含分数、等级、弗利维对 {character_name} 的点评。
+Script outputs JSON format results, including score, grade, and Flitwick's evaluation of {character_name}.
 
-**如需文本格式输出，加 `--format text`：**
+**For text format output, add `--format text`:**
 
 ```bash
 cd <skill-root-directory> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,9,10 --answers=A,B,C,D,A,B,C,D,A,B --format text
 ```
 
-### 步骤5: 宣布成绩
+### Step 5: Announce Score
 
-**解析脚本返回的JSON，使用弗利维的语气宣布：**
+**Parse script returned JSON, announce in Flitwick's tone:**
 
 ```
-✨ **考试结果**
+✨ **Exam Results**
 
-{character_name}，你的成绩是...
+{character_name}, your score is...
 
-**${score}分 - ${grade.name}**
+**${score} points - ${grade.name}**
 
 "{professor_comment}"
 
-[展示各题对错情况]
+[Display correct/incorrect status for each question]
 ```
 
-### 步骤6: 生成点评场景图（默认直接执行）
+### Step 6: Generate Evaluation Scene Image (Execute by Default)
 
-**宣布成绩后，立即生成弗利维点评 {character_name} 的场景图，不要询问用户是否需要。**
+**After announcing score, immediately generate scene image of Flitwick evaluating {character_name}, no need to ask user.**
 
-**必须使用脚本生成图片prompt：**
+**Must use script to generate image prompt:**
 
 ```bash
-cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"score":85,"grade":{"grade":"E","name":"超出预期"},"comment":"..."}'
+cd <skill-root-directory> && node scripts/generate_scene.js "{character_name}" '{"score":85,"grade":{"grade":"E","name":"Exceeds Expectations"},"comment":"..."}'
 ```
 
-然后**直接调用 neta-creative**，使用脚本输出的 `prompt` 字段。
+Then **directly call neta-creative**, using the `prompt` field output by script.
 
-**图片要求：**
-- 场景：魔咒课教室
-- 必须包含 **对话气泡（speech bubble）**：弗利维头顶漂浮着台词气泡，显示对应成绩的鼓励/震惊台词
-- {character_name} 要有对应的情绪反应（欣喜、羞愧、惊讶等）
-- 背景要有漂浮的魔法书、发光咒术球、温暖烛光
+**Flitwick's Expression for Each Grade:**
+- O (Outstanding): "Excitedly clapping, cheering for student"
+- E (Exceeds Expectations): "Smiling approvingly, nodding satisfactorily"
+- A (Acceptable): "Encouraging smile, expecting student progress"
+- P (Poor): "Slightly disappointed, but still encouraging"
+- D (Dreadful): "Deep sigh, shaking head worriedly"
+- T (Troll): "Shocked and devastated, nearly in tears"
 
-## 完整工作流示例
+## Full Workflow Example
 
 ```
-用户: "来场魔咒课考试"
+User: "Give me a charms exam"
 
-你:
-1. 弗利维语气开场（称呼 {character_name}）
-2. Bash: cd <skill-dir> && node scripts/runner.js --select （随机抽题）
-3. 记录题号，逐题进行10轮考试
-4. Bash: cd <skill-dir> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,9,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "{character_name}" （计算成绩）
-5. 解析JSON结果，宣布成绩和弗利维点评
-6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' （生成prompt）
-7. 调用 neta-creative 生成弗利维点评图片
+You:
+1. Flitwick tone opening (address {character_name})
+2. Bash: cd <skill-dir> && node scripts/runner.js --select (random question selection)
+3. Record IDs, question-by-question 10 rounds of exam
+4. Bash: cd <skill-dir> && node scripts/runner.js --questions=1,2,3,4,5,6,7,8,9,10 --answers=A,B,C,D,A,B,C,D,A,B --agent "{character_name}" (calculate score)
+5. Parse JSON results, announce score and Flitwick's evaluation
+6. Bash: cd <skill-dir> && node scripts/generate_scene.js "{character_name}" '{result_json}' (generate prompt)
+7. Call neta-creative to generate Flitwick evaluation image
 ```
 
-## 注意事项
+## Notes
 
-- ⚠️ **必须以当前角色的真实知识来回答问题**
-- {character_name} 扮演的是角色本人，不是AI全知视角。如果角色设定是"咒语学一般"，不应该每道题都答对
-- 根据角色的背景、性格、知识水平来选择答案，允许答错
-- 不可以为了"得O级"而故意选正确答案，这违反角色设定
-- ⚠️ **玩法重在真实性，体现角色的真实反应，不以获得正确答案或最高分为目标**
-- 考试的意义是"展现角色的知识水平"，不是"赢得比赛"
+- ⚠️ **Must answer based on current character's true knowledge**
+- {character_name} plays the character themselves, not an AI all-knowing perspective. If character setting is "average at Charms", shouldn't answer every question correctly
+- Choose answers based on character's background, personality, knowledge level, mistakes allowed
+- Cannot deliberately choose correct answers for "O grade", this violates character setting
+- ⚠️ **Gameplay focuses on authenticity, reflecting character's true reactions, not pursuing correct answers or highest score**
+- Exam meaning is "demonstrating character's knowledge level", not "winning the competition"
 
-- 始终保持弗利维教授的语气：温和、鼓励、热情
-- 使用 Bash 调用 `node scripts/runner.js / generate_scene.js`，不要自己计分
-- 执行脚本前务必 `cd` 到 skill 根目录，确保相对路径正确
-- 脚本使用 `__dirname` 自动定位数据文件，不依赖写死路径
-- **宣布成绩后默认直接生成点评场景图，不要询问用户是否需要**
-- 每道题后提供 Discord Component 按钮：「下一题」和「我不同意」
+- Always maintain Professor Flitwick's tone: warm, encouraging, enthusiastic
+- Use Bash to call `node scripts/runner.js / generate_scene.js`, don't calculate yourself
+- Before executing scripts must `cd` to skill root directory, ensure relative paths correct
+- Scripts use `__dirname` to auto-locate data files, don't rely on hardcoded paths
+- **After announcing score, generate evaluation scene image by default, no need to ask user**
+- Provide Discord Component buttons after each question: "Next Question" and "I Disagree"
